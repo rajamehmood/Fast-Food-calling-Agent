@@ -1,0 +1,276 @@
+{
+  "name": "calling Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "d920bb5a-d150-4a91-9b07-8c96c4fc0624",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "192045ea-93f0-4f88-bf5c-5cc864a867c7",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        -224,
+        0
+      ],
+      "webhookId": "147491f8-f645-40f5-b330-200799279a58"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const body = $json.body || {};\nconst calls = (body.message && body.message.toolCalls) || [];\nconst fn = (calls[0] && calls[0].function) || {};\nlet args = fn['argu' + 'ments'] || {};\nif (typeof args === 'string') { try { args = JSON.parse(args); } catch (e) { args = {}; } }\nconst now = new Date(Date.now() + 5 * 3600 * 1000);\nconst pad = (n) => String(n).padStart(2, '0');\nconst stamp = now.getUTCFullYear() + pad(now.getUTCMonth() + 1) + pad(now.getUTCDate()) + '-' + pad(now.getUTCHours()) + pad(now.getUTCMinutes()) + pad(now.getUTCSeconds());\nconst callId = (body.message && body.message.call && body.message.call.id) || '';\nreturn { json: {\n  customer_name: args.customer_name || args.name || '',\n  phone_number: args.phone_number || args.phone || '',\n  delivery_address: args.delivery_address || args.address || '',\n  item_ordered: args.item_ordered || args.item || args.items || '',\n  quantity: args.quantity ?? '',\n  unit_price: args.unit_price ?? '',\n  total_amount: args.total_amount ?? args.total ?? '',\n  order_id: args.order_id || ('ORD-' + stamp + (callId ? '-' + callId.slice(-4) : '')),\n  order_status: args.order_status || 'confirmed'\n} };"
+      },
+      "id": "8886aa28-ab39-43b9-bc7c-1ae02121e1c4",
+      "name": "Extract Order Details",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1LCI9wzplsd-AdIvoLbA5uirtG5mjRsO5DBBZpahlD6k",
+          "mode": "list",
+          "cachedResultName": "calling agents foe clients",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LCI9wzplsd-AdIvoLbA5uirtG5mjRsO5DBBZpahlD6k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Calling Agent",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LCI9wzplsd-AdIvoLbA5uirtG5mjRsO5DBBZpahlD6k/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Customer Name": "={{ $json.customer_name }}",
+            "Phone Number": "={{ $json.phone_number }}",
+            "Item Ordered": "={{ $json.item_ordered }}",
+            "Quantity": "={{ $json.quantity }}",
+            "Order ID": "={{ $json.order_id }}",
+            "Delivery Address": "={{ $json.delivery_address }}",
+            "Unit Price": "={{ $json.unit_price }}",
+            "Total Amount": "={{ $json.total_amount }}",
+            "Order Status": "={{ $json.order_status }}"
+          },
+          "matchingColumns": [
+            "Order ID"
+          ],
+          "schema": [
+            {
+              "id": "Order ID",
+              "displayName": "Order ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Call Date",
+              "displayName": "Call Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Customer Name",
+              "displayName": "Customer Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Delivery Address",
+              "displayName": "Delivery Address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Item Ordered",
+              "displayName": "Item Ordered",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Quantity",
+              "displayName": "Quantity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Unit Price",
+              "displayName": "Unit Price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Total Amount",
+              "displayName": "Total Amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Call Status",
+              "displayName": "Call Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Order Status",
+              "displayName": "Order Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Call Summary / Notes",
+              "displayName": "Call Summary / Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "056c8d18-0e26-43d9-81d5-cbf340818bfa",
+      "name": "Append or update row in sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "cyAuhG9fL54cVZqD",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"results\": [\n    {\n      \"toolCallId\": \"{{ $('Webhook').item.json.body.message.toolCalls[0].id }}\",\n      \"result\": \"Order saved successfully into the sheet.\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "f02cb661-da82-4fa9-86a2-c67de28caa0c",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        448,
+        0
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract Order Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Order Details": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "1fa3e55b-90ed-4536-ab29-fcd78b9262d7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5adec9c1bb458b25e7bb3fda43c66e5efb68e86dc9f984230032a0d36727aa1a"
+  },
+  "nodeGroups": [],
+  "id": "uW18wrenAhJzf4k3",
+  "tags": []
+}
